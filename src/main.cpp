@@ -12,9 +12,9 @@
 #define MODEL_PATH "../models/yolov5n_new_nv12.bin"
 #define SERIAL_PORT "/dev/ttyACM0"
 #define BAUD_RATE 9600
-#define SEND_INTERVAL 0.05    // 发送间隔（秒）
+#define SEND_INTERVAL 0.05    // 发送间隔
 #define DETECT_SKIP_FRAMES 4 // 每隔4帧检测一次
-#define SERIAL_DELAY_MS 2000 // 串口初始化后延迟2秒
+#define SERIAL_DELAY_MS 2000 // 串口初始化后有一个延迟
 #define NETWORK_INTERFACE "eth0"  // 网络接口名
 #define OUTBOUND_THRESHOLD 10
 
@@ -24,7 +24,7 @@ enum class ProgramState {
     DETECTING,          // 正在检测
 };
 
-// 断网函数
+// 断网运行的函数封装（在sudo下）
 void disableNetwork() {
     std::string cmd = "sudo ip link set " + std::string(NETWORK_INTERFACE) + " down";
     int result = system(cmd.c_str());
@@ -167,7 +167,7 @@ int main(int argc, char **argv)
             std::chrono::duration<double> fps_duration = current_time - prev_time;
             prev_time = current_time;
 
-            // 提取面积最大的检测框（核心修改）
+            // 提取面积最大的检测框
             if (!results.empty())
             {
                 // 改为按检测框面积（宽×高）筛选最大的框
